@@ -1,4 +1,4 @@
-# Contibuting Information
+# Contributing Information
 
 Thank you for considering making contributions to this code and/or project. All feedback and contributions are very welcome. Feel free to contact me if you would like discuss any content in this repository: </br>
 - email: hollie_marshall@hotmail.co.uk
