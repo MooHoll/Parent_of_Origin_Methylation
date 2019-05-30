@@ -8,7 +8,7 @@ The goal of this project is to determine parent-of-origin methylation from RNA-s
 
 
 ## Current Goals
-This project is currently finished but any improvements on the code are welcome.
+This project is currently under-way, any contribution to the GLM model used to determine parent-of-origin methylation is particuarly welcome.
 
 ## Pull Requests
 
