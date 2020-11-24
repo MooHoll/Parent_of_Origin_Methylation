@@ -39,7 +39,7 @@ do
     RGSM=${base}
 done
 
-echo "adding read groups"
+echo "deduplicating"
 for file in $(ls *RG.bam)
 do
   	base=$(basename ${file} "_sorted_RG.bam")
@@ -47,6 +47,7 @@ do
     MarkDuplicates \
     I=${file} \
     O=${base}_sorted_RG_deduplicated.bam \
+    M=${base}_duplicate_metrics.txt \
     REMOVE_DUPLICATES=TRUE
 done
 
@@ -54,6 +55,7 @@ done
 
 echo "moving outputs"
 mv *_sorted_RG_deduplicated.bam /data/ross/misc/analyses/bombus_terrestris/bams
+mv *_duplicate_metrics.txt /data/ross/misc/analyses/bombus_terrestris/bams
 
 echo "a clean directory is a happy directory"
 rm -r $SCRATCH/*
