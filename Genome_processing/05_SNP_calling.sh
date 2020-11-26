@@ -38,7 +38,7 @@ do
         -u \
         -i \
         -X \
-        -b ${file}\
+        -b ${file} \
         > ${base}_vcf.gz
 done
 
@@ -50,7 +50,7 @@ do
         -f GCF_000214255.1_Bter_1.0_genomic.fa \
         -p 1 \
         -! 5 \
-        -C 1 \
+        -C 2 \
         -u \
         -i \
         -X \

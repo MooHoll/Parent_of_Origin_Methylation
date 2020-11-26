@@ -28,7 +28,7 @@ do
 done
 
 echo "index genome and create dict file"
-gatk3 CreateSequenceDictionary -R GCF_000214255.1_Bter_1.0_genomic.fa
+picard CreateSequenceDictionary -R GCF_000214255.1_Bter_1.0_genomic.fa
 samtools faidx GCF_000214255.1_Bter_1.0_genomic.fa
 
 echo "create targets of realignment"
@@ -36,10 +36,10 @@ for file in $(ls *.bam)
 do
   	base=$(basename ${file} "_sorted_RG_deduplicated.bam")
     gatk3 \
-    RealignerTargetCreator \
-    R=GCF_000214255.1_Bter_1.0_genomic.fa \
-    I=${file} \
-    O=${base}.intervals
+    -T RealignerTargetCreator \
+    -R GCF_000214255.1_Bter_1.0_genomic.fa \
+    -I ${file} \
+    -o ${base}.intervals
 done
 
 
@@ -48,11 +48,11 @@ for file in $(ls *.bam)
 do
   	base=$(basename ${file} "_sorted_RG_deduplicated.bam")
     gatk3 \
-    IndelRealigner \
-    R=GCF_000214255.1_Bter_1.0_genomic.fa \
+    -T IndelRealigner \
+    -R GCF_000214255.1_Bter_1.0_genomic.fa \
     -targetIntervals ${base}.intervals \
-    I=${file} \
-    O=${base}_indel_realigned.bam
+    -I ${file} \
+    -o ${base}_indel_realigned.bam
 done
 
 
