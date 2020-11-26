@@ -22,19 +22,25 @@ rsync /data/ross/misc/analyses/bombus_terrestris/genome/GCF_000214255.1_Bter_1.0
 # NOTE: freebayes is single thread, can multithread with freebayes-parallel
 # but this only splits the genome using a simple python script, will just avoid
 
+echo "indexing bams"
+for file in $(ls *.bam)
+do
+samtools index ${file}
+done
+
 queens=m*.bam
 males=q*.bam
 
 echo "call SNPs on queens"
 # min count 2 of alternative alleles, 
-# min 10 reads per SNP, ignore complex events, indels and mnps
+# min 5 reads per SNP, ignore complex events, indels and mnps
 for file in ${queens}
 do
   	base=$(basename ${file} "_indel_realigned.bam")
     freebayes \
         -f GCF_000214255.1_Bter_1.0_genomic.fa \
         -C 2 \
-        -! 5 \
+        --min-coverage 5 \
         -u \
         -i \
         -X \
@@ -49,7 +55,7 @@ do
     freebayes \
         -f GCF_000214255.1_Bter_1.0_genomic.fa \
         -p 1 \
-        -! 5 \
+        --min-coverage 5 \
         -C 2 \
         -u \
         -i \
