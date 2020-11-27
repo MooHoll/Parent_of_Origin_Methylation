@@ -28,8 +28,8 @@ do
 samtools index ${file}
 done
 
-queens=m*.bam
-males=q*.bam
+males=m*.bam
+queens=q*.bam
 
 echo "call SNPs on queens"
 # min count 2 of alternative alleles, 
@@ -52,6 +52,7 @@ echo "call SNPs on males"
 # ploidy set to 1
 for file in ${males}
 do
+    base=$(basename ${file} "_indel_realigned.bam")
     freebayes \
         -f GCF_000214255.1_Bter_1.0_genomic.fa \
         -p 1 \
