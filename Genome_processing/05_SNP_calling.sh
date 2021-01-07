@@ -32,7 +32,7 @@ males=m*.bam
 queens=q*.bam
 
 echo "call SNPs on queens"
-# min count 2 of alternative alleles, 
+# min count 2 reads for alternative alleles, 
 # min 5 reads per SNP, ignore complex events, indels and mnps
 for file in ${queens}
 do
@@ -65,10 +65,16 @@ do
         > ${base}_vcf.gz
 done
 
+for file in $(ls *gz)
+do
+	base=$(basename ${file} "vcf.gz")
+    vcftools --gzvcf ${file} --max-alleles 2 --minQ 20 --min-meanDP 10 --recode --recode-INFO-all --out ${base}filtered
+done
+
 #---------------------------------------------
 
 echo "moving outputs"
-mv *vcf.gz /data/ross/misc/analyses/bombus_terrestris
+mv * /data/ross/misc/analyses/bombus_terrestris/snps
 
 echo "a clean directory is a happy directory"
 rm -r $SCRATCH/*
