@@ -1,12 +1,11 @@
 #!/bin/bash
 
 #PBS -N gatk_alternate_reference
-#PBS -l walltime=00:05:00
+#PBS -l walltime=00:30:00
 #PBS -l vmem=20gb
 #PBS -m bea
 #PBS -M hollie_marshall@hotmail.co.uk
 #PBS -l nodes=1:ppn=8
-#PBS -q devel
 
 # Run script in the working directory it was submitted in 
 cd $PBS_O_WORKDIR 
@@ -25,16 +24,15 @@ if [ ! -d "$OUTPUT" ]; then
     mkdir -p ${OUTPUT} 
 fi
 
-# Create a list of the vcf files to be called                                                                                                            
-FILES=*.vcf
 
 # Run GATK to make the new alternative reference genomes
-for file in $FILES
+for file in $(ls *.vcf)
 do
+    base=$(basename ${file} "_filtered.recode.vcf")
     java -jar ${GATK}\
     -T FastaAlternateReferenceMaker \
     -R ${REF_FA} \
     -V ${file} \
-    -o ${OUTPUT}/{$file}.fasta 
+    -o ${OUTPUT}/${base}.fasta 
 done
 
