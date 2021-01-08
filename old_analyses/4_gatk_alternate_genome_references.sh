@@ -15,7 +15,7 @@ module load gatk/3.8
 module load java/1.8
 
 # Define file paths
-REF_FA=/scratch/monoallelic/hm257/bb_imprinting/genome                                                                                     
+REF_FA=/scratch/monoallelic/hm257/bb_imprinting/genome/GCF_000214255.1_Bter_1.0_genomic.fa                                                                                    
 GATK=/cm/shared/apps/gatk/3.8/GenomeAnalysisTK.jar
 
 # create the directory where the output files are to be written   
