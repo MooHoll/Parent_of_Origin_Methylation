@@ -68,3 +68,45 @@ grep -v ^# m37_unique.vcf | wc -l
 subtractBed -header -A -a q37_alt_homozygous_snps.vcf -b m37_filtered.recode.vcf > q37_unique.vcf
 grep -v ^# q37_unique.vcf | wc -l
 # 117605
+
+# Now filter out all the CT and TC SNPs
+awk '!($4 == "C" && $5 == "T") {print ;}' q08_unique.vcf > inbetween
+awk '!($4 == "T" && $5 == "C") {print ;}' inbetween > q08_final.vcf
+grep -v ^# q08_final.vcf | wc -l
+# 83519
+
+awk '!($4 == "C" && $5 == "T") {print ;}' q19_unique.vcf > inbetween
+awk '!($4 == "T" && $5 == "C") {print ;}' inbetween > q19_final.vcf
+grep -v ^# q19_final.vcf | wc -l
+# 85422
+
+awk '!($4 == "C" && $5 == "T") {print ;}' q23_unique.vcf > inbetween
+awk '!($4 == "T" && $5 == "C") {print ;}' inbetween > q23_final.vcf
+grep -v ^# q23_final.vcf | wc -l
+# 80858
+
+awk '!($4 == "C" && $5 == "T") {print ;}' q37_unique.vcf > inbetween
+awk '!($4 == "T" && $5 == "C") {print ;}' inbetween > q37_final.vcf
+grep -v ^# q37_final.vcf | wc -l
+# 73209
+
+
+awk '!($4 == "C" && $5 == "T") {print ;}' m08_unique.vcf > inbetween
+awk '!($4 == "T" && $5 == "C") {print ;}' inbetween > m08_final.vcf
+grep -v ^# m08_final.vcf | wc -l
+# 283185
+
+awk '!($4 == "C" && $5 == "T") {print ;}' m19_unique.vcf > inbetween
+awk '!($4 == "T" && $5 == "C") {print ;}' inbetween > m19_final.vcf
+grep -v ^# m19_final.vcf | wc -l
+# 270177
+
+awk '!($4 == "C" && $5 == "T") {print ;}' m23_unique.vcf > inbetween
+awk '!($4 == "T" && $5 == "C") {print ;}' inbetween > m23_final.vcf
+grep -v ^# m23_final.vcf | wc -l
+# 275153
+
+awk '!($4 == "C" && $5 == "T") {print ;}' m37_unique.vcf > inbetween
+awk '!($4 == "T" && $5 == "C") {print ;}' inbetween > m37_final.vcf
+grep -v ^# m37_final.vcf | wc -l
+# 309968
