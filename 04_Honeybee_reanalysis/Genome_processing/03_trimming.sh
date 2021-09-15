@@ -1,27 +1,23 @@
 #!/bin/bash
 
 #PBS -N trimming
-#PBS -l walltime=00:05:00
+#PBS -l walltime=05:00:00
 #PBS -l vmem=20gb
 #PBS -m bea
 #PBS -M hollie_marshall@hotmail.co.uk
 #PBS -l nodes=1:ppn=16
-#PBS -q devel
 
 # Run script in the working directory it was submitted in 
 cd $PBS_O_WORKDIR
 
-# Load software needed (pigz needed for parallel zipping)
-module load cutadapt/1.11
+# Load software needed
+module load trimmomatic/0.36
 
-# Trim 10 bases from reads 
-for file in $(ls *1.fastq)
+# Trim 12 bases from reads and adapter contamination from the given .fa file
+for file in $(ls *1.fq.gz)
 do
-	base=$(basename $file "_1.fastq")
-	cutadapt \
-	-u 10 -U 10 \
-	-o trim_${base}_1.fastq\
-	-p trim_${base}_2.fastq \
-	${base}_1.fastq \
-	${base}_2.fastq
+	base=$(basename $file "1.fq.gz")
+	trimmomatic PE -threads 16 ${base}1.fq.gz ${base}2.fq.gz \
+	${base}trim_1.fq.gz ${base}trim_unpaired_1.fq.gz ${base}trim_2.fq.gz ${base}trim_unpaired_2.fq.gz \
+	ILLUMINACLIP:illumina_adapters.fa:2:30:10 LEADING:30 TRAILING:30 MINLEN:50 HEADCROP:10
 done
