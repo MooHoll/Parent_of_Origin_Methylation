@@ -15,11 +15,6 @@ cd $PBS_O_WORKDIR
 module load samtools/1.9
 module load picard/2.6.0 
 
-#echo "indexing bams"
-#for file in $(ls *sorted.bam)
-#do
-#  samtools index ${file}
-#done
 
 echo "adding read groups"
 for file in $(ls *sorted.bam)
