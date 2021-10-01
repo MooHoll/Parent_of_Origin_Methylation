@@ -9,10 +9,10 @@ library(methylKit)
 library(readr)
 
 # Process bam files to make easier to use text files for trialling multiple runs of this script
-file.list <- list("w08_male_reads.bam","w19_male_reads.bam",
-                  "w23_male_reads.bam","w37_male_reads.bam",
-                  "w08_queen_reads.bam","w19_queen_reads.bam", 
-                  "w23_queen_reads.bam","w37_queen_reads.bam")
+file.list <- list("w08_male_reads_sorted.bam","w19_male_reads_sorted.bam",
+                  "w23_male_reads_sorted.bam","w37_male_reads_sorted.bam",
+                  "w08_queen_reads_sorted.bam","w19_queen_reads_sorted.bam", 
+                  "w23_queen_reads_sorted.bam","w37_queen_reads_sorted.bam")
 
 raw_data <- processBismarkAln(file.list,
                               sample.id = list("w08_male","w19_male","w23_male","w37_male",
@@ -36,13 +36,45 @@ raw_data <- methRead(file.list,
                      assembly="bter_1.0", 
                      context="CpG")
 
+
+file.list <- list("w08_male_CpG.txt", "w19_male_CpG.txt", 
+                  "w08_queen_CpG.txt", "w19_queen_CpG.txt")
+raw_data <- methRead(file.list,
+                     sample.id = list("w08_male","w19_male",
+                                      "w08_queen","w19_queen"),
+                     treatment = c(1,1,0,0),
+                     assembly="bter_1.0", 
+                     context="CpG")
+
+file.list <- list("w23_male_CpG.txt", "w37_male_CpG.txt", 
+                  "w23_queen_CpG.txt", "w37_queen_CpG.txt")
+raw_data <- methRead(file.list,
+                     sample.id = list("w23_male","w37_male",
+                                      "w23_queen", "w37_queen"),
+                     treatment = c(1,1,0,0),
+                     assembly="bter_1.0", 
+                     context="CpG")
+
+
 # Filter by coverage NOTE: check how much data we lose here, remember the reads are split between two genomes
-filtered_data <- filterByCoverage(raw_data,lo.count=10,lo.perc=NULL,
+filtered_data <- filterByCoverage(raw_data,lo.count=8,lo.perc=NULL,
                                   hi.count=NULL,hi.perc=99.9)
 
 # Select only CpGs found in all alignments
 meth_all_data <- unite(filtered_data, destrand=TRUE) 
-nrow(meth_all_data) #
+nrow(meth_all_data) 
+# 24 for all data (N genome)
+# cross 1:1218 (N genome)
+# cross 2:767 (N genome)
+
+# all data (alt genome): 4
+# cross 1 (alt genome): 864
+# cross 2 (alt genome): 503
+
+# new genome, new SNPs, N-masked:
+# all:
+# cross 1:
+# cross 2:
 
 ## -------------------------------------------------------------------------
 
@@ -75,8 +107,23 @@ for (df in list(a,b,c,d,e,f,g,h)) {
 }
 meth_positions <- as.vector(as.numeric(unique(allrows$row))) 
 length(meth_positions) 
-# 22349
+# cross 2 (N genome): 0
+# cross 1 (N genome): 0
+
+# cross 2 (alt genome): 3
+# cross 1 (alt genome): 1
+
+# new genome, new SNPs, N-masked:
+# all:
+# cross 1:
+# cross 2:
+
 subset_methBase <- methylKit::select(meth_all_data, meth_positions)
+
+# eyeballed the 3 and 1 and there will be no significant difference 
+# for either lineage or parent of origin
+
+
 
 
 pdf("correlation_male_queen.pdf")

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #PBS -N indel_realignment
-#PBS -l walltime=08:00:00
+#PBS -l walltime=48:00:00
 #PBS -l vmem=40gb
 #PBS -m bea
 #PBS -M hollie_marshall@hotmail.co.uk

@@ -1,12 +1,11 @@
 #!/bin/bash
 
 #PBS -N methtuple
-#PBS -l walltime=00:05:00
+#PBS -l walltime=16:00:00
 #PBS -l vmem=40gb
 #PBS -m bea
 #PBS -M hollie_marshall@hotmail.co.uk
 #PBS -l nodes=1:ppn=2
-#PBS -q devel
 
 # Run script in the working directory it was submitted in (56rs)
 cd $PBS_O_WORKDIR 
