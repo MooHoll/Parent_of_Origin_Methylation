@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #PBS -N m_extraction
-#PBS -l walltime=04:00:00
+#PBS -l walltime=16:00:00
 #PBS -l vmem=20gb
 #PBS -m bea
 #PBS -M hollie_marshall@hotmail.co.uk
@@ -11,10 +11,10 @@
 cd $PBS_O_WORKDIR
 
 # Load modules
-module load samtools/1.3.2
+module load samtools/1.9
 
 # Use single ended mode because the reads are only maternal/paternal of origin and 
-# it's therefore no longer paired
+# it's therefore no longer paired (usually you would use -p for paired-end mode)
 for file in $(ls *_reads.bam)
 do
     base=$(basename ${file} "_reads.bam")
@@ -34,3 +34,16 @@ do
     --genome_folder /scratch/monoallelic/hjm32/bumblebee/genome/old_genome/N_masked/${genome}_genome \
     ${file}
 done
+
+# To read into methylkit:
+#CPGRaw <- methRead(sample.list, 
+#                   sample.id = list("sample1", "sample2","sample3","sample4"),
+#                   assembly="bter_1.0",
+#                   treatment=c(0,0,1,1),
+#                   context="CpG",
+#                   dbtype = NA,
+#                   pipeline = "bismarkCoverage",
+#                   header = T, 
+#                   sep = "\t", 
+#                   mincov=1,
+#                   dbdir= path)

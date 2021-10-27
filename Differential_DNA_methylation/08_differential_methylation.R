@@ -1,27 +1,8 @@
 #------------------------------------------------
-# Calling lineage-specific methylation
+# Differential methylation between castes
 #------------------------------------------------
-
-# The input alignments here are the worker alignments to either the paretnal male or queen 
-# i.e. m08 and q08 are the same worker sample but aligned to either the father or mother of those pooled individuals
-setwd("~/Dropbox/Leicester_postdoc/Projects/PoO_Methylation_BB/Bumblebee_files/methylkit_inputs")
-library(methylKit)
+setwd("~/Dropbox/Leicester_postdoc/Projects/PoO_Methylation_BB/Differential_methylation")library(methylKit)
 library(readr)
-
-# --- for each cross
-
-sample.list <- list("w08_male_merged_CpG_evidence.cov", "w08_queen_merged_CpG_evidence.cov",
-                    "w19_male_merged_CpG_evidence.cov", "w19_queen_merged_CpG_evidence.cov")
-
-CPGRaw <- methRead(sample.list, 
-                   sample.id = list("w08_male","w08_queen","w19_male","w19_queen"),
-                   assembly="bter_1.0",
-                   treatment=c(0,0,1,1),
-                   context="CpG",
-                   dbtype = NA,
-                   pipeline = "bismarkCoverage",
-                   header = T, sep = "\t", mincov=1,
-                   dbdir= path)
 
 
 sample.list <- list("w23_male_merged_CpG_evidence.cov", "w23_queen_merged_CpG_evidence.cov",

@@ -4,7 +4,7 @@
 
 # The input alignments here are the worker alignments to either the paretnal male or queen 
 # i.e. m08 and q08 are the same worker sample but aligned to either the father or mother of those pooled individuals
-
+setwd("~/Dropbox/Leicester_postdoc/Projects/PoO_Methylation_BB/Bumblebee_files/methylkit_inputs")
 library(methylKit)
 library(readr)
 
