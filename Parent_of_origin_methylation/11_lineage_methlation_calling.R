@@ -16,7 +16,7 @@ sample.list <- list("w08_male_merged_CpG_evidence.cov", "w08_queen_merged_CpG_ev
 CPGRaw <- methRead(sample.list, 
                    sample.id = list("w08_male","w08_queen","w19_male","w19_queen"),
                    assembly="bter_1.0",
-                   treatment=c(0,0,1,1),
+                   treatment=c(0,1,1,0),
                    context="CpG",
                    dbtype = NA,
                    pipeline = "bismarkCoverage",
@@ -30,7 +30,7 @@ sample.list <- list("w23_male_merged_CpG_evidence.cov", "w23_queen_merged_CpG_ev
 CPGRaw <- methRead(sample.list, 
                    sample.id = list("w23_male", "w23_queen","w37_male","w37_queen"),
                    assembly="bter_1.0",
-                   treatment=c(0,0,1,1),
+                   treatment=c(0,1,1,0),
                    context="CpG",
                    dbtype = NA,
                    pipeline = "bismarkCoverage",
@@ -94,5 +94,5 @@ write.csv(diff_meth, file="all_results_diff_meth.csv")
 diff_meth_5 <- getMethylDiff(diff_meth, difference=5, qvalue=0.05)
 write.csv(diff_meth_5, file="DMRs_min5percentDiff_qval0.05_MSCfilter.csv")
 
-# cross 1 2/3 significant, eyeballed and not convinced
-# cross 2 2/2 significant, eyeballed and not convinced
+# cross 1 0/3 significant
+# cross 2 0/2 significant
