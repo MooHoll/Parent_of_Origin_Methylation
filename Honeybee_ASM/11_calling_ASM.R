@@ -12,10 +12,7 @@ options(echo=TRUE)
 # gunzip <file.tsz.gz>
 
 # To run script: Rscript <name_of_script.R> <input.tsv>
-#for file in $(ls *tsv)
-#do
-# Rscript script.R ${file}
-#done
+#for file in $(ls *tsv) do;Rscript script.R ${file}; done
 
 library(DAMEfinder)
 library(SummarizedExperiment)
