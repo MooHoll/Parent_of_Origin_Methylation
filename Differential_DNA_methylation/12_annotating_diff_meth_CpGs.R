@@ -2,7 +2,7 @@
 # Filtering diff meth CpGs from methylkit with weighted meth of features
 ## -------------------------------------------------------------------------
 
-setwd("~/Dropbox/Leicester_postdoc/Projects/PoO_Methylation_BB/Differential_methylation")
+setwd("~/Dropbox/Leicester_postdoc/Projects/PoO_Methylation_BB/New_2022/coverage_files")
 library(sqldf)
 library(readr)
 library(doBy)
@@ -12,7 +12,7 @@ library(data.table)
 library(sqldf)
 library(grid)
 
-annotation <- read_delim("~/Dropbox/Leicester_postdoc/Projects/Ben_Developmental_BB/ref_Bter_1.0_top_level_numbered_exons.txt", 
+annotation <- read_delim("ref_Bter_1.0_top_level_numbered_exons.txt", 
                       delim = "\t", escape_double = FALSE, 
                       trim_ws = TRUE)
 
@@ -41,24 +41,24 @@ diff_meth_sites_WvQ$hypermethylated <- "worker"
 diff_meth_sites_WvQ$hypermethylated[diff_meth_sites_WvQ$methylation_diff >0] <- "queen"
 
 # How many hypermeth in each sex?
-nrow(diff_meth_sites_MvW[diff_meth_sites_MvW$hypermethylated=="male",]) #501
-nrow(diff_meth_sites_MvW[diff_meth_sites_MvW$hypermethylated=="worker",]) #510
+nrow(diff_meth_sites_MvW[diff_meth_sites_MvW$hypermethylated=="male",]) #643
+nrow(diff_meth_sites_MvW[diff_meth_sites_MvW$hypermethylated=="worker",]) #589
 
-nrow(diff_meth_sites_MvQ[diff_meth_sites_MvQ$hypermethylated=="male",]) #369
-nrow(diff_meth_sites_MvQ[diff_meth_sites_MvQ$hypermethylated=="queen",]) #455
+nrow(diff_meth_sites_MvQ[diff_meth_sites_MvQ$hypermethylated=="male",]) #463
+nrow(diff_meth_sites_MvQ[diff_meth_sites_MvQ$hypermethylated=="queen",]) #571
 
-nrow(diff_meth_sites_WvQ[diff_meth_sites_WvQ$hypermethylated=="worker",]) #84
-nrow(diff_meth_sites_WvQ[diff_meth_sites_WvQ$hypermethylated=="queen",]) #72
+nrow(diff_meth_sites_WvQ[diff_meth_sites_WvQ$hypermethylated=="worker",]) #170
+nrow(diff_meth_sites_WvQ[diff_meth_sites_WvQ$hypermethylated=="queen",]) #188
 
 # Goodness of fit
-observed = c(84, 72)    # observed frequencies 
+observed = c(170, 188)    # observed frequencies 
 expected = c(0.5, 0.5)    # expected proportions
 
 chisq.test(x = observed,
            p = expected)
-# male vs worker: X-squared = 0.080119, df = 1, p-value = 0.7771
-# male vs queen: X-squared = 8.9757, df = 1, p-value = 0.002736
-# worker vs queen: X-squared = 0.92308, df = 1, p-value = 0.3367
+# male vs worker: X-squared = 2.3669, df = 1, p-value = 0.1239
+# male vs queen: X-squared = 11.28, df = 1, p-value = 0.0007833
+# worker vs queen: X-squared = 0.90503, df = 1, p-value = 0.3414
 
 diff_meth_sites_MvW$comparison <- "MvW"
 diff_meth_sites_MvQ$comparison <- "MvQ"
@@ -91,7 +91,7 @@ output <- output[,-1]
 # Where are these CpGs
 ## -------------------------------------------------------------------------
 
-not_in_feature <- output[is.na(output$gene_id),] #53/8088 not in feature
+not_in_feature <- output[is.na(output$gene_id),] #66/11038 not in feature
 output$feature <- as.factor(output$feature)
 
 # Remove non-informative locations
@@ -101,7 +101,7 @@ output <- output[!output$feature == "mRNA",]
 output <- output[!output$feature == "RNA",]
 output <- output[!output$feature == "transcript",]
 output <- output[!is.na(output$feature),]
-# Note: 2579 annotations from 1991 positions as some positions fall over multiple annotations
+# Note: 3723 annotations from 2624 positions as some positions fall over multiple annotations
 
 ggplot(output, aes(x=feature, fill=hypermethylated))+
   geom_bar()+
@@ -153,9 +153,9 @@ ggplot(output_count, aes(x=feature, y=cpg_position.length))+
 # Here we are saying a min of 2 diff meth cpg per feature to count
 exon_data <- output[output$feature=="exon",]
 number_diff_cpgs_per_exon <- dplyr::count(exon_data, gene_id)
-range(number_diff_cpgs_per_exon$n) #1-23, mean = 2.2, median = 1
+median(number_diff_cpgs_per_exon$n) #1-28, mean = 2.5, median = 1
 hist(number_diff_cpgs_per_exon$n)
-nrow(number_diff_cpgs_per_exon[number_diff_cpgs_per_exon$n >=2,]) #354
+nrow(number_diff_cpgs_per_exon[number_diff_cpgs_per_exon$n >=2,]) #457
 exons_with_2_cpgs <- subset(number_diff_cpgs_per_exon, n >=2)
 
 # Write out the exon info for later scatter
@@ -191,7 +191,7 @@ exon_data <- output[(output$gene_id %in% exons_with_2_cpgs$gene_id &
                          output$feature == "exon"),]
 
 # Read in the weighted methylation levels
-weighted_meth <- read_delim("weighted_meth/weighted_meth_annotation_by_caste.txt", 
+weighted_meth <- read_delim("../weighted_meth/weighted_meth_annotation_by_caste.txt", 
                                delim = "\t", escape_double = FALSE, 
                                trim_ws = TRUE)
 head(weighted_meth)
@@ -199,7 +199,7 @@ weighted_meth$MvW_diff <- weighted_meth$worker - weighted_meth$male
 weighted_meth$MvQ_diff <- weighted_meth$queen - weighted_meth$male
 weighted_meth$WvQ_diff <- weighted_meth$queen - weighted_meth$worker
 
-# remove rows where no data for male or female
+# remove rows where no data for male or worker or queen
 weighted_meth <- weighted_meth[!is.na(weighted_meth$male),]
 weighted_meth <- weighted_meth[!is.na(weighted_meth$queen),]
 weighted_meth <- weighted_meth[!is.na(weighted_meth$worker),]
@@ -216,7 +216,7 @@ weighted_meth_exons_MvW <- weighted_meth_exons_MvW[(weighted_meth_exons_MvW$MvW_
                                                       weighted_meth_exons_MvW$MvW_diff < -0.15),]
 write.table(weighted_meth_exons_MvW,file="weighted_meth_exons_MvW.txt",sep="\t",quote = F,
             col.names = T, row.names = F)
-length(unique(weighted_meth_exons_MvW$gene_id)) # 155 genes
+length(unique(weighted_meth_exons_MvW$gene_id)) # 161 genes
 genes <- as.data.frame(unique(weighted_meth_exons_MvW$gene_id))
 colnames(genes)<-"gene_id"
 write.table(genes, file="MvW_all_diff_meth_genes.txt",sep="\t",quote = F,
@@ -230,11 +230,18 @@ weighted_meth_exons_MvQ <- weighted_meth_exons_MvQ[(weighted_meth_exons_MvQ$MvQ_
                                                       weighted_meth_exons_MvQ$MvQ_diff < -0.15),]
 write.table(weighted_meth_exons_MvQ,file="weighted_meth_exons_MvQ.txt",sep="\t",quote = F,
             col.names = T, row.names = F)
-length(unique(weighted_meth_exons_MvQ$gene_id)) # 165 genes
+length(unique(weighted_meth_exons_MvQ$gene_id)) # 161 genes (different to above - number is coincidence, see below)
 genes <- as.data.frame(unique(weighted_meth_exons_MvQ$gene_id))
 colnames(genes)<-"gene_id"
 write.table(genes, file="MvQ_all_diff_meth_genes.txt",sep="\t",quote = F,
             col.names = T, row.names = F)
+
+# List of genes the same length, let's check is something has gone wrong
+genes1 <- as.data.frame(unique(weighted_meth_exons_MvW$gene_id))
+colnames(genes1)<-"genes"
+genes2 <- as.data.frame(unique(weighted_meth_exons_MvQ$gene_id))
+colnames(genes2)<-"genes"
+check <- merge(genes1, genes2, all=T) #229 - it's ok, there are some differences
 
 WvQ_exons <- exon_data[exon_data$comparison=="WvQ",]
 weighted_meth_exons_WvQ <- weighted_meth[(weighted_meth$gene_id %in% WvQ_exons$gene_id &
@@ -243,7 +250,7 @@ weighted_meth_exons_WvQ <- weighted_meth_exons_WvQ[(weighted_meth_exons_WvQ$WvQ_
                                                       weighted_meth_exons_WvQ$WvQ_diff < -0.15),]
 write.table(weighted_meth_exons_WvQ,file="weighted_meth_exons_WvQ.txt",sep="\t",quote = F,
             col.names = T, row.names = F)
-length(unique(weighted_meth_exons_WvQ$gene_id)) # 37 genes
+length(unique(weighted_meth_exons_WvQ$gene_id)) # 59 genes
 genes <- as.data.frame(unique(weighted_meth_exons_WvQ$gene_id))
 colnames(genes)<-"gene_id"
 write.table(genes, file="WvQ_all_diff_meth_genes.txt",sep="\t",quote = F,
@@ -255,20 +262,20 @@ weighted_meth_exons_MvW$hypermethylated <- "male"
 weighted_meth_exons_MvW$hypermethylated[weighted_meth_exons_MvW$worker > weighted_meth_exons_MvW$male] <- "worker"
 
 male_hyper_exon_genes <- unique(weighted_meth_exons_MvW$gene_id[weighted_meth_exons_MvW$hypermethylated=="male"])
-length(male_hyper_exon_genes) # 95
+length(male_hyper_exon_genes) # 97
 genes <- as.data.frame(male_hyper_exon_genes)
 colnames(genes)<-"gene_id"
 write.table(genes, file="MvW_male_hypermeth_genes.txt",sep="\t",quote = F,
             col.names = T, row.names = F)
 
 worker_hyper_exon_genes <- unique(weighted_meth_exons_MvW$gene_id[weighted_meth_exons_MvW$hypermethylated=="worker"])
-length(worker_hyper_exon_genes) # 107
+length(worker_hyper_exon_genes) # 99
 genes <- as.data.frame(worker_hyper_exon_genes)
 colnames(genes)<-"gene_id"
 write.table(genes, file="MvW_worker_hypermeth_genes.txt",sep="\t",quote = F,
             col.names = T, row.names = F)
 
-both <- Reduce(intersect, list(male_hyper_exon_genes,worker_hyper_exon_genes)) # 47
+both <- Reduce(intersect, list(male_hyper_exon_genes,worker_hyper_exon_genes)) # 35
 common_exon_MvW <- weighted_meth_exons_MvW[weighted_meth_exons_MvW$gene_id %in% both,]
 
 
@@ -276,20 +283,20 @@ weighted_meth_exons_MvQ$hypermethylated <- "male"
 weighted_meth_exons_MvQ$hypermethylated[weighted_meth_exons_MvQ$queen > weighted_meth_exons_MvQ$male] <- "queen"
 
 male_hyper_exon_genes_2 <- unique(weighted_meth_exons_MvQ$gene_id[weighted_meth_exons_MvQ$hypermethylated=="male"])
-length(male_hyper_exon_genes_2) # 94
+length(male_hyper_exon_genes_2) # 96
 genes <- as.data.frame(male_hyper_exon_genes_2)
 colnames(genes)<-"gene_id"
 write.table(genes, file="MvQ_male_hypermeth_genes.txt",sep="\t",quote = F,
             col.names = T, row.names = F)
 
 queen_hyper_exon_genes <- unique(weighted_meth_exons_MvQ$gene_id[weighted_meth_exons_MvQ$hypermethylated=="queen"])
-length(queen_hyper_exon_genes) # 120
+length(queen_hyper_exon_genes) # 111
 genes <- as.data.frame(queen_hyper_exon_genes)
 colnames(genes)<-"gene_id"
 write.table(genes, file="MvQ_queen_hypermeth_genes.txt",sep="\t",quote = F,
             col.names = T, row.names = F)
 
-both <- Reduce(intersect, list(male_hyper_exon_genes_2,queen_hyper_exon_genes)) # 49
+both <- Reduce(intersect, list(male_hyper_exon_genes_2,queen_hyper_exon_genes)) # 46
 common_exon_MvQ <- weighted_meth_exons_MvQ[weighted_meth_exons_MvQ$gene_id %in% both,]
 
 
@@ -297,20 +304,20 @@ weighted_meth_exons_WvQ$hypermethylated <- "worker"
 weighted_meth_exons_WvQ$hypermethylated[weighted_meth_exons_WvQ$queen > weighted_meth_exons_WvQ$worker] <- "queen"
 
 worker_hyper_exon_genes_2 <- unique(weighted_meth_exons_WvQ$gene_id[weighted_meth_exons_WvQ$hypermethylated=="worker"])
-length(worker_hyper_exon_genes_2) # 27
+length(worker_hyper_exon_genes_2) # 39
 genes <- as.data.frame(worker_hyper_exon_genes_2)
 colnames(genes)<-"gene_id"
 write.table(genes, file="WvQ_worker_hypermeth_genes.txt",sep="\t",quote = F,
             col.names = T, row.names = F)
 
 queen_hyper_exon_genes_2 <- unique(weighted_meth_exons_WvQ$gene_id[weighted_meth_exons_WvQ$hypermethylated=="queen"])
-length(queen_hyper_exon_genes_2) # 19
+length(queen_hyper_exon_genes_2) # 33
 genes <- as.data.frame(queen_hyper_exon_genes_2)
 colnames(genes)<-"gene_id"
 write.table(genes, file="WvQ_queen_hypermeth_genes.txt",sep="\t",quote = F,
             col.names = T, row.names = F)
             
-both <- Reduce(intersect, list(worker_hyper_exon_genes_2,queen_hyper_exon_genes_2)) # 9
+both <- Reduce(intersect, list(worker_hyper_exon_genes_2,queen_hyper_exon_genes_2)) # 13
 common_exon_WvQ <- weighted_meth_exons_WvQ[weighted_meth_exons_WvQ$gene_id %in% both,]
 
 # Make a plot to make this easier to interpret
@@ -388,11 +395,6 @@ upset(all, nsets =6, order.by = "freq",
       mainbar.y.label =NULL)
 grid.text("Intersection Size",x = 0.545, y=0.60, gp=gpar(fontsize=20), rot = 90)
 
-## -------------------------------------------------------------------------
-# Write out all the gene lists for later use
-## -------------------------------------------------------------------------
-
-### UP TO HERE!
 head(all)
 write.table(all, file="all_diff_meth_geneIDs_with_category.txt", sep="\t", quote = F,
             col.names = T, row.names = F)

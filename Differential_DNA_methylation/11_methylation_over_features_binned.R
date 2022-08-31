@@ -2,7 +2,7 @@
 # Re-make meth over feature graph for diff levels of methylation
 ## -------------------------------------------------------------------------
 
-setwd("~/Dropbox/Leicester_postdoc/Projects/PoO_Methylation_BB/Differential_methylation/weighted_meth")
+setwd("~/Dropbox/Leicester_postdoc/Projects/PoO_Methylation_BB/New_2022/weighted_meth")
 library(readr)
 library(doBy)
 library(ggplot2)
@@ -12,6 +12,7 @@ library(Hmisc)
 library(scales)
 library(ggpubr)
 library(UpSetR)
+library(grid)
 ## -------------------------------------------------------------------------
 annotation <- read_delim("weighted_meth_annotation_by_caste.txt", 
                          "\t", escape_double = FALSE, trim_ws = TRUE)

@@ -1,7 +1,7 @@
 ## -------------------------------------------------------------------------
 # Take average weighted methylation level of feature across bio replicates
 ## -------------------------------------------------------------------------
-setwd("~/Dropbox/Leicester_postdoc/Projects/PoO_Methylation_BB/Differential_methylation/weighted_meth")
+setwd("~/Dropbox/Leicester_postdoc/Projects/PoO_Methylation_BB/New_2022/weighted_meth")
 library(sqldf)
 library(readr)
 library(doBy)

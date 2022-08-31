@@ -2,6 +2,9 @@
 # Weighted methylation per annotation for each sex
 ## -------------------------------------------------------------------------
 
+# NOTE: need to run this for each N-masked genome per colony
+# file with the relative number of CpGs - based on the alternate ref genomes make
+
 library(sqldf)
 library(readr)
 library(doBy)
@@ -17,15 +20,15 @@ read_file1 <- function(x){
 }
 
 samples <- lapply(file.list, read_file1)
-sample_names <- list("m08","m19","m23","m37","q08","q19","q23","q37","w08","w19","w23","w37")
+sample_names <- list("m08","q08","w08")
 names(samples) <- sample_names
 
 # Read in gene with start/end and total CpGs per gene
-annotation_with_total_cpgs <- read_table2("ref_Bter_1.0_top_level_numbered_exons_with_total_cpgs.txt")
+annotation_with_total_cpgs <- read_table2("08_annotation_with_total_cpgs.txt")
 colnames(annotation_with_total_cpgs)[7] <- "cpg_count"
 colnames(annotation_with_total_cpgs)[2] <- "chr"
 
-registerDoParallel(cores = 4)
+registerDoParallel(cores = 3)
 
 # Calculate weighted meth for each gene for each sample
 foreach(i = seq_along(samples)) %dopar% {

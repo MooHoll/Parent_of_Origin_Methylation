@@ -3,7 +3,7 @@
 ## -------------------------------------------------------------------------
 
 # Load packages etc.
-setwd("~/Dropbox/Leicester_postdoc/Projects/PoO_Methylation_BB/Differential_methylation/methylkit_inputs")
+setwd("~/Dropbox/Leicester_postdoc/Projects/PoO_Methylation_BB/New_2022/coverage_files")
 library(grid)
 library(readr)
 library(ggplot2)
@@ -15,12 +15,12 @@ library(ggrepel)
 ## -------------------------------------------------------------------------
 
 # Get a methylkit object for all samples
-sample.list <- list("m08.merged_CpG_evidence.cov" ,"m19.merged_CpG_evidence.cov",
-                    "m23.merged_CpG_evidence.cov","m37.merged_CpG_evidence.cov",
-                    "q08.merged_CpG_evidence.cov" ,"q19.merged_CpG_evidence.cov",
-                    "q23.merged_CpG_evidence.cov","q37.merged_CpG_evidence.cov",
-                    "w08.merged_CpG_evidence.cov" ,"w19.merged_CpG_evidence.cov",
-                    "w23.merged_CpG_evidence.cov","w37.merged_CpG_evidence.cov")
+sample.list <- list("m08_merged_CpG_evidence.cov" ,"m19_merged_CpG_evidence.cov",
+                    "m23_merged_CpG_evidence.cov","m37_merged_CpG_evidence.cov",
+                    "q08_merged_CpG_evidence.cov" ,"q19_merged_CpG_evidence.cov",
+                    "q23_merged_CpG_evidence.cov","q37_merged_CpG_evidence.cov",
+                    "w08_merged_CpG_evidence.cov" ,"w19_merged_CpG_evidence.cov",
+                    "w23_merged_CpG_evidence.cov","w37_merged_CpG_evidence.cov")
 
 CPGRaw <- methRead(sample.list, 
                    sample.id = list("m08", "m19","m23","m37",
@@ -36,8 +36,12 @@ CPGRaw <- methRead(sample.list,
 
 filtered_data <- filterByCoverage(CPGRaw,lo.count=10,lo.perc=NULL,
                                   hi.count=NULL,hi.perc=99.9)
-meth_all_data <- unite(filtered_data, destrand=F) 
-nrow(meth_all_data) # 1432892
+rm(CPGRaw)
+normalized <- normalizeCoverage(filtered_data)
+rm(filtered_data)
+meth_all_data <- unite(normalized, destrand=F) 
+rm(normalized)
+nrow(meth_all_data) # 1463570
 
 df_meth_all <- getData(meth_all_data)
 
@@ -67,7 +71,7 @@ for (df in list(a,b,c,d,e,f,g,h,k,l,m,n)) {
 }
 
 meth_positions <- as.vector(as.numeric(unique(allrows$row))) 
-length(meth_positions) # 5293
+length(meth_positions) # 6514
 
 subset_methBase <- methylKit::select(meth_all_data, meth_positions)
 head(subset_methBase)

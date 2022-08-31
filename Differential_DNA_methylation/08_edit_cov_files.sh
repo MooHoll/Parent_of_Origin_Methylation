@@ -4,7 +4,7 @@ gunzip *cov.gz
 
 for file in $(ls *cov)
 do
-    base=$(basename ${file} "_1_bismark_bt2_pe.deduplicated.bismark.cov")
+    base=$(basename ${file} "_merged_CpG_evidence.cov")
     cut -f1,2,5,6 ${file} > ${base}_coverage.txt
 done
 
@@ -32,3 +32,12 @@ for(i in seq_along(samples)){
     myfile <- file.path("./", paste0(names(samples[i]),"_","final_coverage.txt"))
     write.table(final_file, file=myfile, quote=F, sep="\t", row.names=F)
 }
+
+# I also want to make a file with the total CpGs per gene for each alt ref genome
+# Only 4 alt ref genomes so only need 4 files here
+
+for file in $(ls *CpG_report.txt)
+do
+  	base=$(basename ${file} "_1_bismark_bt2_pe.deduplicated.CpG_report.txt")
+    cut -f1,2 ${file} > ${base}_total_cpgs_in_genome.txt
+done
