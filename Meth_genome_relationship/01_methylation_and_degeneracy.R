@@ -66,7 +66,7 @@ ggplot(prop_meth_degen_melt, aes(x=variable, y =value,fill=Sample))+
         legend.text = element_text(size=20),
         legend.title = element_blank())+
   scale_fill_manual(breaks = c("Male ","Queen "),
-                    values = c("#44AA99","#CC6677"))
+                    values = c("midnightblue","#CC6677"))
 
 library(multcomp)
 head(prop_meth_degen_melt)

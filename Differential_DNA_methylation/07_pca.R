@@ -101,4 +101,21 @@ ggplot(PCA_data1, aes(PC1, PC2, colour=Caste))+
         axis.title=element_text(size=30),
         legend.text=element_text(size=30),
         legend.title=element_blank())+
-  scale_colour_manual(values=c("#44AA99","#CC6677","#DDCC77"))
+  scale_colour_manual(values=c("midnightblue","#CC6677","#DDCC77"))
+
+# Add in scree plot to the supplementary to show that colony does not group in the main PCs
+PCASamples(subset_methBase, screeplot=T, obj.return = T)
+
+ggplot(PCA_data1, aes(PC7, PC8, colour=Caste))+
+  geom_point(size=14)+
+  geom_text_repel(aes(label=sample), size=12,show.legend=FALSE, 
+                  point.padding = 2, box.padding = 1)+
+  theme_bw()+
+  xlab(paste0("PC7:",percentage[7],"variance")) +
+  ylab(paste0("PC8:",percentage[8],"variance")) +
+  theme(axis.text=element_text(size=26),
+        axis.title=element_text(size=30),
+        legend.text=element_text(size=30),
+        legend.title=element_blank())+
+  scale_colour_manual(values=c("midnightblue","#CC6677","#DDCC77"))
+

@@ -110,20 +110,19 @@ subset_methBase <- methylKit::select(meth_all_data, meth_positions)
 head(subset_methBase)
 
 # Diff meth between worker alignments to parental genomes
+covariates1 <- data.frame(subspecies=c("audax","dalmatinus", "audax", "dalmatinus", 
+                                      "mixed", "mixed", "mixed", "mixed"))
+
+#covariates <- data.frame(subspecies=c("audax","dalmatinus", "audax", "dalmatinus", 
+#                                      "audax","dalmatinus", "audax", "dalmatinus"))
+
 #covariates <- data.frame(subspecies=c("audax","dalmatinus", "audax", "dalmatinus", 
 #                                      "mixed", "mixed", "mixed", "mixed"))
 
-#covariates <- data.frame(subspecies=c("audax","dalmatinus", "audax", "dalmatinus", 
-#                                      "audax","dalmatinus", "audax", "dalmatinus"), 
-#                         family=c("1","2","3","4","2","1","4","3"))
+diff_meth <- calculateDiffMeth(subset_methBase, mc.cores = 1, covariates = covariates1, method='qvalue')
 
-#covariates <- data.frame(subspecies=c("audax","dalmatinus", "audax", "dalmatinus", 
-#                                      "mixed", "mixed", "mixed", "mixed"))
-
-diff_meth <- calculateDiffMeth(subset_methBase, mc.cores = 1)
-
-diff_meth_5 <- getMethylDiff(diff_meth, difference=10, qvalue=0.01)
-nrow(diff_meth_5)
+diff_meth_5_covar <- getMethylDiff(diff_meth, difference=10, qvalue=0.01)
+nrow(diff_meth_5_covar)
 
 #write.csv(diff_meth_5, file="male_vs_worker_diff_meth_CpGs.csv")
 #write.csv(diff_meth_5, file="male_vs_queen_diff_meth_CpGs.csv")

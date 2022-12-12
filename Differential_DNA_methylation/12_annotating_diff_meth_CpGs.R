@@ -118,7 +118,7 @@ ggplot(output, aes(x=feature, fill=hypermethylated))+
         legend.text = element_text(size=20),
         legend.title = element_blank())+
   scale_fill_manual(breaks = c("male","queen","worker"),labels=c("Male","Queen","Worker"),
-                    values=c("#44AA99","#CC6677","#DDCC77"))+
+                    values=c("midnightblue","#CC6677","#DDCC77"))+
   scale_x_discrete(breaks = c("promoter","five_prime_UTR","three_prime_UTR","gene","exon","intron","intergenic","lnc_RNA"),
                    labels = c("Promoter","5' UTR","3' UTR","Gene","Exon","Intron","Intergenic","lnc RNA"),
                    limits =c("promoter","five_prime_UTR","three_prime_UTR","gene","exon","intron","lnc_RNA","intergenic"))
@@ -346,7 +346,7 @@ ggplot(all_for_plot, aes(x=comparison, fill=hypermethylated))+
         legend.text = element_text(size=20),
         legend.title = element_blank())+
   scale_fill_manual(breaks = c("male","queen","worker","both"),labels=c("Male","Queen","Worker","Both"),
-                    values=c("#44AA99","#CC6677","#DDCC77","grey64"))+
+                    values=c("midnightblue","#CC6677","#DDCC77","grey64"))+
   scale_x_discrete(breaks=c("MvW","MvQ","WvQ"),
                    labels=c("Male vs Worker", "Male vs Queen","Worker vs Queen"))
 
@@ -399,7 +399,32 @@ head(all)
 write.table(all, file="all_diff_meth_geneIDs_with_category.txt", sep="\t", quote = F,
             col.names = T, row.names = F)
 
+# change upset plot into a venn diagram
+library("ggVennDiagram")
 
+genes <- paste("gene",1:1000,sep="")
+x <- list(
+  A = sample(genes,300), 
+  B = sample(genes,525), 
+  C = sample(genes,440),
+  D = sample(genes,350)
+)
+head(x)
+
+
+# Need a list of vectors which have only gene names
+head(all)
+hyper_males_to_workers <- all$gene_id[all$`Hypermethylated in males compared to workers`==1]
+hyper_workers_to_males <- all$gene_id[all$`Hypermethylated in workers compared to males`==1]
+hyper_males_to_queens <- all$gene_id[all$`Hypermethylated in males compared to queens`==1]
+hyper_queens_to_males <- all$gene_id[all$`Hypermethylated in queens compared to males`==1]
+hyper_workers_to_queens <- all$gene_id[all$`Hypermethylated in workers compared to queens`==1]
+hyper_queens_to_workers <- all$gene_id[all$`Hypermethylated in queens compared to workers`==1]
+
+x <- list(hyper_males_to_workers,hyper_workers_to_males,hyper_males_to_queens,
+          hyper_queens_to_males,hyper_workers_to_queens, hyper_queens_to_workers)
+
+ggVennDiagram(x)
 
 
 

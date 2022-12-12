@@ -41,7 +41,7 @@ ggplot(MvQ_all_data, aes(x=level, fill=caste))+
   ggtitle("Male vs Queen Differentially Methylated Genes")+
   theme_bw()+
   scale_fill_manual(breaks = c("male","queen","worker"),labels=c("Male","Queen","Worker"),
-                    values=c("#44AA99","#CC6677","#DDCC77"))+
+                    values=c("midnightblue","#CC6677","#DDCC77"))+
   theme(axis.text.y=element_text(size=18),
         axis.text.x=element_text(size=18),
         axis.title.y=element_text(size=20),
@@ -57,7 +57,7 @@ ggplot(MvW_all_data, aes(x=level, fill=caste))+
   ggtitle("Male vs Worker Differentially Methylated Genes")+
   theme_bw()+
   scale_fill_manual(breaks = c("male","queen","worker"),labels=c("Male","Queen","Worker"),
-                    values=c("#44AA99","#CC6677","#DDCC77"))+
+                    values=c("midnightblue","#CC6677","#DDCC77"))+
   theme(axis.text.y=element_text(size=18),
         axis.text.x=element_text(size=18),
         axis.title.y=element_text(size=20),
@@ -73,7 +73,7 @@ ggplot(WvQ_all_data, aes(x=level, fill=caste))+
   ggtitle("Worker vs Queen Differentially Methylated Genes")+
   theme_bw()+
   scale_fill_manual(breaks = c("male","queen","worker"),labels=c("Male","Queen","Worker"),
-                    values=c("#44AA99","#CC6677","#DDCC77"))+
+                    values=c("midnightblue","#CC6677","#DDCC77"))+
   theme(axis.text.y=element_text(size=18),
         axis.text.x=element_text(size=18),
         axis.title.y=element_text(size=20),

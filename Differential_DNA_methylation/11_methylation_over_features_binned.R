@@ -90,7 +90,7 @@ ggplot(summary_all, aes(x=Feature, y=Weighted_Methylation, fill=Caste))+
         legend.text = element_text(size=20),
         legend.title = element_blank())+
   scale_fill_manual(breaks = c("male","queen","worker"),labels=c("Male","Queen","Worker"),
-                    values=c("#44AA99","#CC6677","#DDCC77"))+
+                    values=c("midnightblue","#CC6677","#DDCC77"))+
   scale_x_discrete(breaks = c("promoter","five_prime_UTR","three_prime_UTR","gene","exon","intron","intergenic","lnc_RNA"),
                    labels = c("Promoter","5' UTR","3' UTR","Gene","Exon","Intron","Intergenic","lnc RNA"),
                    limits =c("promoter","five_prime_UTR","three_prime_UTR","gene","exon","intron","lnc_RNA","intergenic"))
@@ -123,14 +123,15 @@ melted_annot$bins[melted_annot$Weighted_Methylation ==0] <-"none"
 
 #melted_annot$combined <- paste0(melted_annot$Feature, "_", melted_annot$Caste)
 melted_meth_stuff_2 <- melted_annot
-melted_meth_stuff_2$counts <- with(melted_annot, 
-                                  ave(bins, Feature, Caste, FUN=length))
-plot_data <- melted_meth_stuff_2[!duplicated(melted_meth_stuff_2),]
 
-plot_data_prom <- subset(plot_data, bins =="low")
-plot_data_prom$counts <- as.numeric(plot_data_prom$counts)
+plot_data <- melted_meth_stuff_2[,c(1,3,5)]
+plot_data <- aggregate(cbind(plot_data[0],counts=1), plot_data, length)
 
-b1<- ggplot(plot_data_prom, aes(x=Feature, fill=Caste, y=counts))+
+
+plot_data_prom_low <- subset(plot_data, bins =="low")
+plot_data_prom_low$counts <- as.numeric(plot_data_prom_low$counts)
+
+b1<- ggplot(plot_data_prom_low, aes(x=Feature, fill=Caste, y=counts))+
   geom_bar(position = position_dodge(), stat = "identity")+
   theme_bw()+
  # xlab("Genomic Feature")+
@@ -144,15 +145,15 @@ b1<- ggplot(plot_data_prom, aes(x=Feature, fill=Caste, y=counts))+
         legend.title = element_text(size=12))+
   scale_y_continuous(labels = comma)+
   scale_fill_manual(breaks = c("male","queen","worker"),labels=c("Male","Queen","Worker"),
-                    values=c("#44AA99","#CC6677","#DDCC77"))+
+                    values=c("midnightblue","#CC6677","#DDCC77"))+
   scale_x_discrete(breaks = c("promoter","five_prime_UTR","three_prime_UTR","gene","exon","intron","intergenic","lnc_RNA"),
                    labels = c("Promoter","5' UTR","3' UTR","Gene","Exon","Intron","Intergenic","lnc RNA"),
                    limits =c("promoter","five_prime_UTR","three_prime_UTR","gene","exon","intron","lnc_RNA","intergenic"))
 
-plot_data_prom <- subset(plot_data, bins =="medium")
-plot_data_prom$counts <- as.numeric(plot_data_prom$counts)
+plot_data_prom_med <- subset(plot_data, bins =="medium")
+plot_data_prom_med$counts <- as.numeric(plot_data_prom_med$counts)
 
-b2<- ggplot(plot_data_prom, aes(x=Feature, fill=Caste, y=counts))+
+b2<- ggplot(plot_data_prom_med, aes(x=Feature, fill=Caste, y=counts))+
   geom_bar(position = position_dodge(), stat = "identity")+
   theme_bw()+
   #xlab("Genomic Feature")+
@@ -166,15 +167,15 @@ b2<- ggplot(plot_data_prom, aes(x=Feature, fill=Caste, y=counts))+
         legend.title = element_text(size=12))+
   scale_y_continuous(labels = comma)+
   scale_fill_manual(breaks = c("male","queen","worker"),labels=c("Male","Queen","Worker"),
-                    values=c("#44AA99","#CC6677","#DDCC77"))+
+                    values=c("midnightblue","#CC6677","#DDCC77"))+
   scale_x_discrete(breaks = c("promoter","five_prime_UTR","three_prime_UTR","gene","exon","intron","intergenic","lnc_RNA"),
                    labels = c("Promoter","5' UTR","3' UTR","Gene","Exon","Intron","Intergenic","lnc RNA"),
                    limits =c("promoter","five_prime_UTR","three_prime_UTR","gene","exon","intron","lnc_RNA","intergenic"))
 
-plot_data_prom <- subset(plot_data, bins =="high")
-plot_data_prom$counts <- as.numeric(plot_data_prom$counts)
+plot_data_prom_high <- subset(plot_data, bins =="high")
+plot_data_prom_high$counts <- as.numeric(plot_data_prom_high$counts)
 
-b3<- ggplot(plot_data_prom, aes(x=Feature, fill=Caste, y=counts))+
+b3<- ggplot(plot_data_prom_high, aes(x=Feature, fill=Caste, y=counts))+
   geom_bar(position = position_dodge(), stat = "identity")+
   theme_bw()+
  # xlab("")+
@@ -189,7 +190,7 @@ b3<- ggplot(plot_data_prom, aes(x=Feature, fill=Caste, y=counts))+
         legend.title = element_text(size=12))+
   scale_y_continuous(labels = comma)+
   scale_fill_manual(breaks = c("male","queen","worker"),labels=c("Male","Queen","Worker"),
-                    values=c("#44AA99","#CC6677","#DDCC77"))+
+                    values=c("midnightblue","#CC6677","#DDCC77"))+
   scale_x_discrete(breaks = c("promoter","five_prime_UTR","three_prime_UTR","gene","exon","intron","intergenic","lnc_RNA"),
                    labels = c("Promoter","5' UTR","3' UTR","Gene","Exon","Intron","Intergenic","lnc RNA"),
                    limits =c("promoter","five_prime_UTR","three_prime_UTR","gene","exon","intron","lnc_RNA","intergenic"))
@@ -212,7 +213,7 @@ b4 <- ggplot(plot_data_prom, aes(x=Feature, fill=Caste, y=counts))+
         legend.title = element_text(size=12))+
   scale_y_continuous(labels = comma)+
   scale_fill_manual(breaks = c("male","queen","worker"),labels=c("Male","Queen","Worker"),
-                    values=c("#44AA99","#CC6677","#DDCC77"))+
+                    values=c("midnightblue","#CC6677","#DDCC77"))+
   scale_x_discrete(breaks = c("promoter","five_prime_UTR","three_prime_UTR","gene","exon","intron","intergenic","lnc_RNA"),
                    labels = c("Promoter","5' UTR","3' UTR","Gene","Exon","Intron","Intergenic","lnc RNA"),
                    limits =c("promoter","five_prime_UTR","three_prime_UTR","gene","exon","intron","lnc_RNA","intergenic"))
@@ -234,7 +235,7 @@ b3_1<- ggplot(plot_data_prom, aes(x=Feature, fill=Caste, y=counts))+
         legend.title = element_text(size=12))+
   scale_y_continuous(labels = comma)+
   scale_fill_manual(breaks = c("male","queen","worker"),labels=c("Male","Queen","Worker"),
-                    values=c("#44AA99","#CC6677","#DDCC77"))+
+                    values=c("midnightblue","#CC6677","#DDCC77"))+
   scale_x_discrete(breaks = c("promoter","five_prime_UTR","three_prime_UTR","gene","exon","intron","intergenic","lnc_RNA"),
                    labels = c("Promoter","5' UTR","3' UTR","Gene","Exon","Intron","Intergenic","lnc RNA"),
                    limits =c("promoter","five_prime_UTR","three_prime_UTR","gene","exon","intron","lnc_RNA","intergenic"))
@@ -316,3 +317,7 @@ upset(all, order.by = "freq",
       scale.sets = "identity",
       mainbar.y.label =NULL)
 grid.text("Intersection Size",x = 0.35, y=0.60, gp=gpar(fontsize=20), rot = 90)
+
+
+
+

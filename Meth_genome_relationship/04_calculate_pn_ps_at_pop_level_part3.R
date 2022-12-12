@@ -148,7 +148,7 @@ ggplot(by_sex_long, aes(x=selection, y=logmeth, fill=sex))+
         legend.text = element_text(size=20),
         legend.title = element_blank())+
   scale_fill_manual(breaks = c("male","queen"),
-                    values = c("#44AA99","#CC6677"),
+                    values = c("midnightblue","#CC6677"),
                     labels = c("Male","Queen"))
 
 library(multcomp)
