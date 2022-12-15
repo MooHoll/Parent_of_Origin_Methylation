@@ -221,7 +221,25 @@ genes <- as.data.frame(unique(weighted_meth_exons_MvW$gene_id))
 colnames(genes)<-"gene_id"
 write.table(genes, file="MvW_all_diff_meth_genes.txt",sep="\t",quote = F,
             col.names = T, row.names = F)
-
+# Check if these genes have exons going the same way or not
+head(weighted_meth_exons_MvW)
+exon_direction <- weighted_meth_exons_MvW[,c(2,5,9)]
+more_than_one_exon <- as.data.frame(table(exon_direction$gene_id))
+more_than_one_exon2<- more_than_one_exon[more_than_one_exon$Freq >=2,]
+exon_direction <- exon_direction[exon_direction$gene_id %in% more_than_one_exon2$Var1,]
+exon_direction$direction <- "hyper"
+exon_direction$direction[exon_direction$MvW_diff < 0] <- "hypo"
+exon_direction <- exon_direction[,c(1,4)]
+counting_direction <- dcast(exon_direction, gene_id ~ direction)
+counting_direction$same_or_no <- "diff_direction"
+counting_direction$same_or_no[counting_direction$hyper ==0 | counting_direction$hypo ==0] <- "same_direction"
+single_exon <- more_than_one_exon[more_than_one_exon$Freq ==1,]
+single_exon$same_or_no <- "single_exon"
+colnames(single_exon)[1]<-"gene_id"
+single_exon <- single_exon[,-2]
+counting_direction <- counting_direction[,-c(2,3)]
+both_MvW <- rbind(single_exon, counting_direction) #161 good (95 single, 66 multi)
+both_MvW$comparison <- "MvW"
 
 MvQ_exons <- exon_data[exon_data$comparison=="MvQ",]
 weighted_meth_exons_MvQ <- weighted_meth[(weighted_meth$gene_id %in% MvQ_exons$gene_id &
@@ -235,6 +253,25 @@ genes <- as.data.frame(unique(weighted_meth_exons_MvQ$gene_id))
 colnames(genes)<-"gene_id"
 write.table(genes, file="MvQ_all_diff_meth_genes.txt",sep="\t",quote = F,
             col.names = T, row.names = F)
+# Check if these genes have exons going the same way or not
+head(weighted_meth_exons_MvQ)
+exon_direction <- weighted_meth_exons_MvQ[,c(2,5,10)]
+more_than_one_exon <- as.data.frame(table(exon_direction$gene_id))
+more_than_one_exon2<- more_than_one_exon[more_than_one_exon$Freq >=2,]
+exon_direction <- exon_direction[exon_direction$gene_id %in% more_than_one_exon2$Var1,]
+exon_direction$direction <- "hyper"
+exon_direction$direction[exon_direction$MvQ_diff < 0] <- "hypo"
+exon_direction <- exon_direction[,c(1,4)]
+counting_direction <- dcast(exon_direction, gene_id ~ direction)
+counting_direction$same_or_no <- "diff_direction"
+counting_direction$same_or_no[counting_direction$hyper ==0 | counting_direction$hypo ==0] <- "same_direction"
+single_exon <- more_than_one_exon[more_than_one_exon$Freq ==1,]
+single_exon$same_or_no <- "single_exon"
+colnames(single_exon)[1]<-"gene_id"
+single_exon <- single_exon[,-2]
+counting_direction <- counting_direction[,-c(2,3)]
+both_MvQ <- rbind(single_exon, counting_direction) #161 good (80 single, 81 multi)
+both_MvQ$comparison <- "MvQ"
 
 # List of genes the same length, let's check is something has gone wrong
 genes1 <- as.data.frame(unique(weighted_meth_exons_MvW$gene_id))
@@ -255,7 +292,43 @@ genes <- as.data.frame(unique(weighted_meth_exons_WvQ$gene_id))
 colnames(genes)<-"gene_id"
 write.table(genes, file="WvQ_all_diff_meth_genes.txt",sep="\t",quote = F,
             col.names = T, row.names = F)
+# Check if these genes have exons going the same way or not
+head(weighted_meth_exons_WvQ)
+exon_direction <- weighted_meth_exons_WvQ[,c(2,5,11)]
+more_than_one_exon <- as.data.frame(table(exon_direction$gene_id))
+more_than_one_exon2<- more_than_one_exon[more_than_one_exon$Freq >=2,]
+exon_direction <- exon_direction[exon_direction$gene_id %in% more_than_one_exon2$Var1,]
+exon_direction$direction <- "hyper"
+exon_direction$direction[exon_direction$WvQ_diff < 0] <- "hypo"
+exon_direction <- exon_direction[,c(1,4)]
+counting_direction <- dcast(exon_direction, gene_id ~ direction)
+counting_direction$same_or_no <- "diff_direction"
+counting_direction$same_or_no[counting_direction$hyper ==0 | counting_direction$hypo ==0] <- "same_direction"
+single_exon <- more_than_one_exon[more_than_one_exon$Freq ==1,]
+single_exon$same_or_no <- "single_exon"
+colnames(single_exon)[1]<-"gene_id"
+single_exon <- single_exon[,-2]
+counting_direction <- counting_direction[,-c(2,3)]
+both_WvQ <- rbind(single_exon, counting_direction) #59 good (35 single, 24 multi)
+both_WvQ$comparison <- "WvQ"
 
+# Make a graph
+all_exon_direction <- rbind(both_MvQ, both_MvW, both_WvQ)
+ggplot(all_exon_direction, aes(x=comparison, fill=same_or_no))+
+  geom_bar(stat = "count", position = "dodge")+
+  theme_bw()+
+  xlab("Comparison")+
+  ylab("Number of Genes")+
+  scale_fill_manual(breaks = c("diff_direction","same_direction","single_exon"),
+                    labels =c("Differing Methylation","Consistant Methylation", "Single Exon"),
+                    values = c("#0072B2","#56B4E9","#999999"))+
+  theme(axis.text.y=element_text(size=18),
+        axis.text.x=element_text(size=18),
+        axis.title.y=element_text(size=20),
+        axis.title.x = element_text(size=20),
+        plot.title=element_text(size = 20),
+        legend.text = element_text(size=20),
+        legend.title = element_blank())
 
 # Which sex are these genes hypermethylated in
 weighted_meth_exons_MvW$hypermethylated <- "male"

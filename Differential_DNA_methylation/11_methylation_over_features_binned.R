@@ -95,6 +95,11 @@ ggplot(summary_all, aes(x=Feature, y=Weighted_Methylation, fill=Caste))+
                    labels = c("Promoter","5' UTR","3' UTR","Gene","Exon","Intron","Intergenic","lnc RNA"),
                    limits =c("promoter","five_prime_UTR","three_prime_UTR","gene","exon","intron","lnc_RNA","intergenic"))
 
+head(melted_annot)
+median(melted_annot$Weighted_Methylation[melted_annot$Feature=="exon" &
+                                           melted_annot$Caste=="worker"])
+
+
 # Stats
 library(multcomp)
 head(melted_annot)

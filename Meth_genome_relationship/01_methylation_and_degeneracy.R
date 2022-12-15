@@ -77,6 +77,25 @@ summary.lm(model1) # Everything sig
 posthoc<- glht(model1, linfct = mcp(variable = 'Tukey'))
 summary(posthoc) # only 0x is sig diff to the other three
 
+library(betareg) # Try more appropriate stats for propostions
+head(prop_meth_degen_melt)
+#model1<-betareg(value ~ Sample * variable , data=prop_meth_degen_melt)
+model2<-betareg(value ~ variable + Sample  , data=prop_meth_degen_melt)
+library(emmeans)
+joint_tests(model2)
+library(lmtest)
+lrtest(model2)
+summary(model2)
+
+# Question: which genes show zero fold degeneracy and are they the highly methylated genes
+
+
+
+
+
+
+
+
 
 # Of less interest
 # ---------------------------------------------------------------
