@@ -11,8 +11,13 @@ library(treemap)
 # Read in background GO set and make compatible with GOstats
 
 #GO_annotations <- read.table("./GO_male_all_methylated_genes.txt")
-#GO_annotations <- read.table("./GO_queen_all_methylated_genes.txt")
+GO_annotations <- read.table("./GO_queen_all_methylated_genes.txt")
 #GO_annotations <- read.table("./GO_worker_all_methylated_genes.txt")
+
+# Stick in new file for the meth_degen analysis
+#GO_annotations1 <- read.table("./GO_male_all_methylated_genes.txt")
+#GO_annotations2 <- read.table("./GO_queen_all_methylated_genes.txt")
+#GO_annotations <- merge(GO_annotations1, GO_annotations2)
 
 #GO_annotations <- read.table("./MvW_all_background.txt")
 #GO_annotations <- read.table("./MvQ_all_background.txt")
@@ -22,7 +27,7 @@ library(treemap)
 #GO_annotations <- read.table("./GO_diff_meth_MvQ.txt")
 #GO_annotations <- read.table("./GO_diff_meth_WvQ.txt")
 
-GO_annotations <- read.table("./all_comparisons_background.txt")
+#GO_annotations <- read.table("./all_comparisons_background.txt")
 
 #-----------------------------------------------
 GO_annotations[,3] <- paste("IEA")
@@ -43,8 +48,12 @@ universe <- as.vector(unique(GO_annotations[,3]))
 # Read in gene's of interest 
 
 #my_genes <- read.table("./male_high_methylated_genes.txt", header = T)
+#my_genes <- read.table("./male_meth_zerofold.txt", header = T)
 #my_genes <- read.table("./queen_high_methylated_genes.txt", header = T)
+my_genes <- read.table("./queen_meth_zerofold.txt", header = T)
 #my_genes <- read.table("./worker_high_methylated_genes.txt", header = T)
+
+#my_genes <- read.table("./both_meth_zerofold.txt", header = T)
 
 #my_genes <- read.table("./MvW_all_diff_meth_genes.txt", header = T)
 #my_genes <- read.table("./MvQ_all_diff_meth_genes.txt", header = T)
@@ -60,7 +69,7 @@ universe <- as.vector(unique(GO_annotations[,3]))
 #my_genes <- read.table("./WvQ_queen_hypermeth_genes.txt", header = T)
 
 #my_genes <- read.table("./GO_diff_meth_hyper_WQvM.txt", header = T)
-my_genes <- read.table("./GO_diff_meth_hyper_MvWQ.txt", header = T)
+#my_genes <- read.table("./GO_diff_meth_hyper_MvWQ.txt", header = T)
 
 #-----------------------------------------------
 my_genes <- as.data.frame(na.omit(my_genes$gene_id))
@@ -77,6 +86,12 @@ length(my_genes)
 # Male: 27/37
 # Queen: 12/18
 # Worker 15/21
+
+# Degen zero and meth
+# Male: 25/26
+# Queen: 106/117
+# Both: 319/341
+
 
 # Diff meth vs all meth found in both in the comparison
 # MvW: 150/161
@@ -157,8 +172,12 @@ Result_FDR <- Result[p.adjust(Result$Pvalue,method = "fdr") < 0.05,]
 REVIGO <- Result_FDR[,1:2]
 
 #write.table(REVIGO,"./outputs/male_high_meth_against_all_meth.txt",row.names = F,sep = "\t",quote = F)
+#write.table(REVIGO,"./outputs/male_meth_zero_degen.txt",row.names = F,sep = "\t",quote = F)
 #write.table(REVIGO,"./outputs/queen_high_meth_against_all_meth.txt",row.names = F,sep = "\t",quote = F)
+write.table(REVIGO,"./outputs/queen_meth_zero_degen.txt",row.names = F,sep = "\t",quote = F)
 #write.table(REVIGO,"./outputs/worker_high_meth_against_all_meth.txt",row.names = F,sep = "\t",quote = F)
+
+#write.table(REVIGO,"./outputs/both_meth_zero_degen.txt",row.names = F,sep = "\t",quote = F)
 
 #write.table(REVIGO,"./outputs/all_diff_meth_MvW.txt",row.names = F,sep = "\t",quote = F)
 #write.table(REVIGO,"./outputs/all_diff_meth_MvQ.txt",row.names = F,sep = "\t",quote = F)
@@ -174,7 +193,7 @@ REVIGO <- Result_FDR[,1:2]
 #write.table(REVIGO,"./outputs/queen_hyper_WvQ.txt",row.names = F,sep = "\t",quote = F)
 
 #write.table(REVIGO,"./outputs/WQ_hyper_vsM.txt",row.names = F,sep = "\t",quote = F)
-write.table(REVIGO,"./outputs/M_hyper_vsWQ.txt",row.names = F,sep = "\t",quote = F)
+#write.table(REVIGO,"./outputs/M_hyper_vsWQ.txt",row.names = F,sep = "\t",quote = F)
 
 
 
