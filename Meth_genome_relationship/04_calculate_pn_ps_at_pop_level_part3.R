@@ -160,8 +160,72 @@ anova(model1,model2) # No sig interaction
 summary.lm(model2) # Not sig
 
 
-
-# also diff meth genes
-
 # Next question what if we do this by highly methylated genes and lowly methylated genes?
-# Also is there a relationship with differentially methylated genes?
+weighted_meth <- read_delim("~/Dropbox/Leicester_postdoc/Projects/PoO_Methylation_BB/Previous/Differential_methylation/weighted_meth/weighted_meth_annotation_by_caste.txt", 
+                                                delim = "\t", escape_double = FALSE, 
+                                                trim_ws = TRUE)
+weighted_meth <- weighted_meth[weighted_meth$feature=="gene",]
+
+weighted_meth_male <- weighted_meth[,c(2,6)]
+weighted_meth_male$sex <- "male"
+colnames(weighted_meth_male)[2] <- "meth"
+weighted_meth_male$level <- "none"
+weighted_meth_male$level[weighted_meth_male$meth > 0 & weighted_meth_male$meth < 0.3] <- "low"
+weighted_meth_male$level[weighted_meth_male$meth >= 0.3 & weighted_meth_male$meth < 0.7] <- "medium"
+weighted_meth_male$level[weighted_meth_male$meth >= 0.7] <- "high"
+
+weighted_meth_queen <- weighted_meth[,c(2,7)]
+weighted_meth_queen$sex <- "queen"
+colnames(weighted_meth_queen)[2] <- "meth"
+weighted_meth_queen$level <- "none"
+weighted_meth_queen$level[weighted_meth_queen$meth > 0 & weighted_meth_queen$meth < 0.3] <- "low"
+weighted_meth_queen$level[weighted_meth_queen$meth >= 0.3 & weighted_meth_queen$meth < 0.7] <- "medium"
+weighted_meth_queen$level[weighted_meth_queen$meth >= 0.7] <- "high"
+
+head(all_data)
+
+all_data_male <- merge(all_data, weighted_meth_male, by="gene_id")
+all_data_queen <- merge(all_data, weighted_meth_queen, by="gene_id")
+
+both <- rbind(all_data_male, all_data_queen)
+both$pn_ps_binom <- "pN/pS > 1"
+both$pn_ps_binom[both$pn_ps < 1] <- "pN/pS < 1"
+
+both$both_vars <- paste0(both$sex, "_",both$pn_ps_binom)
+
+ggplot(both, aes(x=level, fill=both_vars))+
+  geom_bar(stat="count", position = "dodge")
+
+# Proportion doesn't make sense, so maybe hypergeometric... then multiple testing correction
+head(both)
+both_subset <- both[,c(5,6,7)]
+table(both_subset)
+
+# Take a step back, question does meth category and sex explain pn/ps value?
+head(both)
+both$level <- as.factor(both$level)
+
+library(multcomp)
+#model1<-lm(pn_ps ~ level * sex , data=both)
+model2<-lm(pn_ps ~ level + sex , data=both)
+anova(model1,model2) # No interaction
+summary.lm(model2) # Only high sig?
+posthoc<- glht(model2, linfct = mcp(level = 'Tukey'))
+summary(posthoc) # nothing sig
+
+# But what if we say binomial?
+head(both)
+both$binom <- 1
+both$binom[both$pn_ps_binom =="pN/pS < 1"] <- 0
+
+model2<- glm(formula = binom ~ level + sex, 
+             family = binomial(link = "logit"), data = both)
+summary(model2)
+library(car)
+Anova(model2) # For sure there is nothing going on here
+library(emmeans)
+summary(emmeans(model2, pairwise ~ level + sex, 
+                adjust="tukey", mode="linear.predictor", type="Score"))
+
+
+

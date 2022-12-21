@@ -3,11 +3,11 @@
 setwd("~/Dropbox/Leicester_postdoc/Projects/PoO_Methylation_BB/New_2022")
 library(readr)
 
-male_high_p <- read_delim("~/Dropbox/Leicester_postdoc/Projects/PoO_Methylation_BB/New_2022/GO_analysis/outputs/M_hyper_vsWQ.txt", 
+male_high_p <- read_delim("~/Dropbox/Leicester_postdoc/Projects/PoO_Methylation_BB/New_2022/GO_analysis/outputs/queen_meth_zero_degen.txt", 
                                               delim = "\t", escape_double = FALSE, 
                                               trim_ws = TRUE)
 
-male_high_freq <- read_delim("~/Dropbox/Leicester_postdoc/Projects/PoO_Methylation_BB/New_2022/GO_analysis/outputs/REVIGO/M_hyper_vsWQ.tsv", 
+male_high_freq <- read_delim("~/Dropbox/Leicester_postdoc/Projects/PoO_Methylation_BB/New_2022/GO_analysis/outputs/REVIGO/queen_meth_zero_degen.tsv", 
                                               delim = "\t", escape_double = FALSE, 
                                               trim_ws = TRUE)
 male_high_freq <- male_high_freq[,c(1,2,5)]

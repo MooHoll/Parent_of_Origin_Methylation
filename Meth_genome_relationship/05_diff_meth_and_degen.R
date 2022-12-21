@@ -253,4 +253,55 @@ ggplot(both_plot, aes(x=categroy, fill=sex))+
         legend.title = element_blank())
   
   
-  
+# Need to do some stats on this....
+# Question: is there significantly more genes which have a methylated zero-fold degen site per meth category
+# given the number of genes within that category already...
+
+# Hypergeometric enrichment test? Need to do per sex (total genes in genome with any meth data = 11656)
+# total with low/med/high methylation = m
+# total genes not in low/med/high cat = n
+# total with zero fold methylated site = k
+# overlap = x
+# phyper(q, m, n, k, lower.tail = TRUE, log.p = FALSE)
+
+
+# for males, 
+table(male_meth_categories$categroy)
+#high    low medium   none 
+#34  10503   1048     71 
+
+both_meth_zerofold <- read_csv("both_meth_zerofold.txt")
+male_meth_zerofold <- read_csv("male_meth_zerofold.txt")
+all_male <- rbind(both_meth_zerofold, male_meth_zerofold)
+
+all_male_with_cat <- male_meth_categories[male_meth_categories$gene_id %in% all_male$gene_id,] #362
+table(all_male_with_cat$categroy)
+#high    low medium 
+#1    301     60 
+
+phyper(1, 34, 11622, 362, lower.tail = F, log.p = FALSE) #high: 0.2851199
+phyper(301, 10503, 1153, 362, lower.tail = F, log.p = FALSE) #low:0.9999789
+phyper(60, 1048, 10608, 362, lower.tail = F, log.p = FALSE) #medium:9.986366e-07
+
+
+# for queens 
+table(queen_meth_categories$categroy)
+#high    low medium   none 
+#18  10665    929     44
+
+queen_meth_zerofold <- read_csv("queen_meth_zerofold.txt")
+all_queen <- rbind(both_meth_zerofold, queen_meth_zerofold)
+
+all_queen_with_cat <- queen_meth_categories[queen_meth_categories$gene_id %in% all_queen$gene_id,] #350
+table(all_queen_with_cat$categroy)
+#high    low medium 
+#1    300     49 
+
+phyper(1, 18, 11638, 362, lower.tail = F, log.p = FALSE) #high: 0.1061985
+phyper(300, 10665, 991, 362, lower.tail = F, log.p = FALSE) #low:0.9999999
+phyper(49, 929, 10727, 362, lower.tail = F, log.p = FALSE) #medium:8.481483e-05
+
+ps <- c(0.2851199,0.9999789,9.986366e-07,0.1061985,0.9999999,8.481483e-05)
+p.adjust(ps, method = "BH", n = length(ps))
+# 4.276798e-01 9.999999e-01 5.991820e-06 2.123970e-01 9.999999e-01 2.544445e-04
+# The medium category is still significant for both sexes
